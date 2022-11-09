@@ -9,13 +9,6 @@ app.use(express.json())
 app.use(category);
 app.use(product);
 
-
-
-
-
-
-
-
 mongoose.connect('mongodb://localhost:27017/crudproject')
 .then(()=>{
     console.log("mongodb connected")
@@ -23,11 +16,20 @@ mongoose.connect('mongodb://localhost:27017/crudproject')
 .catch(()=>{
     console.log("Connection fail")
 })
-	 
+
+//pagination
 app.get('/', function (req, res) {
-	  res.send('Hello World123')
-})
+   let {page,limit}=req.query;
+   if(!page) page=1;
+   if(!limit) page=10;
+
+   const skip=(page-1)*10;
+   const allproductslist = allproductslist.find().skip(skip).limit(limit);
+
+
+	  res.send({page:page, limit: limit,allproductslist: allproductslist });
+});
 	 
 app.listen(port,function(){
     console.log(`Server started on ${port}`)
-})
+});
